@@ -5,7 +5,7 @@ PyTorch implementation of the paper [E3xSO3 Equivariant Networks for Spherical D
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/e3so3conv.png" />
 </p>
 
-(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(.)$ . (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$ . Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
+(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\hat{f}_v(.)$ . (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$ . Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
 
 We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
 
