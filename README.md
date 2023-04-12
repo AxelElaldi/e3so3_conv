@@ -1,13 +1,12 @@
 # Roto-Translation Equivariant Spherical Deconvolution
-PyTorch implementation of the paper [E3xSO3 Equivariant Networks for Spherical Deconvolution in Diffusion MRI](https://openreview.net/pdf?id=lri_iAbpn_r) from Axel Elaldi, Neel Dey, and Guido Gerig . Main application of this work is for diffusion MRI and fODF estimation, and can be extended to other learning problem on structured or unstructured grid of spheres.
+This repo contains the PyTorch implementation of [E3 x SO3 Equivariant Networks for Spherical Deconvolution in Diffusion MRI](https://openreview.net/pdf?id=lri_iAbpn_r). The main application pertains to fODF estimation in diffusion MRI, however it extends to generic learning problems on a structured or unstructured spatial configuration of spherical measurements.
+
+We provide code for both generic usage and to perform the R3 x S2 MNIST and diffusion MRI experiments from the paper.
 
 <p align="center">
-  <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/e3so3conv.png" />
+  <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/overview.png" />
 </p>
-
-(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(.)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
-
-We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
+*(A) Diffusion MRI measures a spatial grid of spherical signals. (B) In addition to translations and grid reflections, we construct layers equivariant to voxel and grid-wise rotations and any combination thereof. (C) RT-ESD takes a patch of spheres and processes it with an E(3) x SO(3)-equivariant UNet to produce fODFs. It is trained under an unsupervised regularized reconstruction objective.*
 
 ## 1. Getting started
 
@@ -28,7 +27,18 @@ pip install torchio # We use torchio to work on the proposed MNIST dataset
 
 We use [WandB](https://docs.wandb.ai/quickstart) to record model training. This is optional and disabled by default.
 
-## 2. E3xSO3 convolution example
+## 2. Layer overview
+
+<p align="center">
+  <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/e3so3conv.png" />
+</p>
+
+(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(.)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
+
+We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
+
+
+## 3. E(3) x SO(3) convolution example
 ```python:
 from model.graphconv import Conv
 from utils.sampling import HealpixSampling
@@ -36,6 +46,7 @@ import torch
 ```
 
 We first need to define the spherical sampling used by the convolution. It will create the laplacian of the spherical graph and, the spherical pooling operations, which is dependent on the spherical graph. We combine all these information into one SphericalSampling class.
+
 ```python:
 # Define the spherical sampling used for the spherical convolution.
 # The Healpix sampling is convenient thanks to its hierarchical structures
@@ -80,7 +91,7 @@ e3so3_conv = Conv(in_channels, out_channels, lap, kernel_sizeSph, kernel_sizeSpa
 
 These three convolutions can readily be applied to a R3xS2 random signal.
 ```python:
-# Generate a random R3xS2 signal
+# Generate a random R3 x S2 signal
 batch_size = 2
 # Convolution input should have size
 # Batch x Feature Channel x Number of spherical vertice x Spatial patch size x Spatial patch size x Spatial patch size
@@ -99,7 +110,7 @@ out_e3 = e3_conv(x)
 out_e3so3 = e3so3_conv(x)
 ```
 
-## 3. E3xSO3 Unet example
+## 4. E(3) x SO(3) Unet example
 ```python:
 from model.unet import GraphCNNUnet
 from utils.sampling import HealpixSampling
@@ -152,9 +163,9 @@ x = torch.rand(batch_size, in_channels, laps[-1].shape[0], patch_size, patch_siz
 y = unet(x) # B x F_out x (V or 1) x P x P x P
 ```
 
-## 4. R3xS2 MNIST dataset
+## 5. R3 x S2 MNIST dataset
 
-We provide the code to generate different version of the R3xS2 MNIST dataset. For more details on the generation process, we refer to the paper [RTESD](https://openreview.net/pdf?id=lri_iAbpn_r).
+We provide the code to generate different versions of the R3xS2 MNIST dataset. For more details on the generation process, we refer to the paper [RTESD](https://openreview.net/pdf?id=lri_iAbpn_r).
 
 <p align="center">
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/r3s2mnist.png" />
@@ -162,13 +173,13 @@ We provide the code to generate different version of the R3xS2 MNIST dataset. Fo
 
 Spatio-spherical images and label maps for $\mathbb{R}^3 \times \mathcal{S}^2$ MNIST, respectively.
 
-### 4.1 Create the volume labels
+### 5.1 Create the volume labels
 We first create the spatial volumes. The snapshot bellow create 100 volumes (dataset_size) of size 16x16x16 (grid_size). A tube of size 4x4x16 (tube_size) is created for each digit. Each volume is randomly rotated and the background is fixed to the digit 0. You need to choose the root path of the dataset. 
 ```
 python create_volume.py --dataset_path $your_dataset_path --prefix mnist --dataset_size 100 --grid_size 16 --tube_size 4 --rotation --fixed_background
 ```
 
-### 4.2 Create the spherical signals
+### 5.2 Create the spherical signals
 We then create the spherical images for each voxel of each volumes. The snapshot bellow takes the previous 100 volumes. For each voxel, we sample a random image from the mnist dataset from the corresponding digit class and take a random crop (crop) of size 14x14 (crop_size). The crop image is then projected onto a Healpix grid of bandwidth 4, i.e. 192 vertices.
 ```
 python create_sphere.py --dataset_path $your_dataset_path/mnist_datasetsize_100_gridsize_16_tubesize_4_rotation_True_background_True --mnist_path $your_dataset_path --bandwidth 4 --rotation voxel --crop random --crop_size 14 --discard --keep_no_crop
@@ -177,9 +188,9 @@ python create_sphere.py --dataset_path $your_dataset_path/mnist_datasetsize_100_
 You will find in your dataset path the resulting dataset. It is split between train/val/test. Each generated volume has an image and label files saved under a nii.gz format (nifti). We also provide the image with the full spherical digit under the file image_np_crop.nii.gz
 
 
-## 5. R3xS2 MNIST classification
+## 6. R3xS2 MNIST classification
 
-### 5.1 Dataset generation
+### 6.1 Dataset generation
 We provide the training and testing script used in our paper. First, generate the five datasets.
 ```
 % No rotation
@@ -203,7 +214,7 @@ python create_volume.py --dataset_path $your_dataset_path --prefix gridvoxelsame
 python create_sphere.py --dataset_path $your_dataset_path/gridvoxelsamecrop_datasetsize_100_gridsize_16_tubesize_4_rotation_True_background_True --mnist_path $your_dataset_path --bandwidth 4 --rotation same --crop random --crop_size 14 --discard --keep_no_crop
 ```
 
-### 5.2 Model training
+### 6.2 Model training
 Train the model with the following command:
 ```
 python train_mnist.py --data_path $your_dataset_path --sfx_train norot --batch_size 32 --lr 1e-2 --epoch 50 --conv_name mixed --kernel_sizeSph 3 --kernel_sizeSpa 3  --depth 3 --start_filter 8 --bandwidth 4 --save_every 1 --cropsize 14 --crop random --background
@@ -211,13 +222,13 @@ python train_mnist.py --data_path $your_dataset_path --sfx_train norot --batch_s
 
 You can train on different dataset version using sfx_train --> [norot, voxel, grid, gridvoxel, gridvoxelsame]. You can use different convolution using conv_name --> [mixed, spherical, spatial_vec, spatial_sh, spatial]
 
-### 5.3 Model testing
+### 6.3 Model testing
 Test the model with the following command:
 ```
 python test_mnist.py --data_path $your_dataset_path --batch_size 1 --model_name $your_model_name --epoch $your_model_epoch
 ```
 
-### 5.4 Result
+### 6.4 Result
 
 <p align="center">
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/r3s2mnist_result.png" />
@@ -225,7 +236,7 @@ python test_mnist.py --data_path $your_dataset_path --batch_size 1 --model_name 
 
 Classification performances when trained on data with (right) or without (left) rotation augmentation and tested on data with no rotations, grid-rotations, voxel-rotations, and independent grid and voxel-rotations.
 
-## 6. Diffusion MRI deconvolution
+## 7. Diffusion MRI deconvolution
 The main application of this work is for dMRI deconvolution. We use the same architecture and training process as [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution), where you can find usefull information on the deconvolution architecture.
 
 <p align="center">
@@ -234,7 +245,7 @@ The main application of this work is for dMRI deconvolution. We use the same arc
 
 RT-ESD takes a patch of spheres and processes it with an $E(3)\times SO(3)$-equivariant UNet to produce fODFs. It is trained under an unsupervised regularized reconstruction objective.
 
-## 6.1 Prepare the diffusion MRI data
+## 7.1 Prepare the diffusion MRI data
 
 In a root folder:
 * Copy your diffusion MRI data (resp. the mask) as a nifti file under the name **features.nii.gz** (**mask.nii.gz**). 
@@ -242,7 +253,7 @@ In a root folder:
 * In the root folder, create a folder for the response functions, called **response_functions**. There, create a folder for each response function estimation algorithm you want to use. We will use the name **rf_algo** as example folder. In each algorithm folder, copy the white matter, grey matter, and CSF reponse function files under the names **wm_response.txt**, **gm_response.txt**, and **csf_response.txt**. We refer to [Mrtrix3](https://mrtrix.readthedocs.io/en/0.3.16/concepts/response_function_estimation.html) for different response function algorithms.
 
 
-## 6.2 Train a model
+## 7.2 Train a model
 You can train a new model on your data using the following bash command:
 
 ```
@@ -250,14 +261,14 @@ You can train a new model on your data using the following bash command:
 ```
 Training script works with mixed (RT-ESD) and spherical (ESD) convolutions. Adding the --concatenate flag produces a (C-ESD) model.
 
-## 6.3 Test a model
+## 7.3 Test a model
 You can test a trained model on your data using the following bash command:
 
 ```
     python test.py --data_path $your_data_path --batch_size 1 --epoch $your_model_epoch --model_name $your_model_name --middle_voxel
 ```
 
-## 6.4 Result
+## 7.4 Result
 <p align="center">
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/pve.png" />
 </p>
@@ -270,15 +281,18 @@ Unsupervised partial volume estimation. Col. 1: T1w MRI and label map of the sub
 
 Estimated fODFs from the Tractometer dMRI dataset. This figure visualizes results from CSD, ESD, and RT-ESD at a particular location with crossing fibers. RT-ESD yields more spatially-coherent fiber directions with accurate modeling of crossing fibers as compared to the spatially-agnostic ESD and CSD baselines.
 
-## Licence
+## Acknowledgments
 
 Part of the graph convolution code comes from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch).
 
 Please consider citing our paper if you find this repository useful.
 ```
-    @inproceedings{elaldi3,
-    title={E(3) x SO(3)-Equivariant Networks for Spherical Deconvolution in Diffusion MRI},
-    author={Elaldi, Axel and Gerig, Guido and Dey, Neel },
-    booktitle={Medical Imaging with Deep Learning}
-    }
+@inproceedings{
+elaldi2023e,
+title={E(3) x {SO}(3)-Equivariant Networks for Spherical Deconvolution in Diffusion {MRI}},
+author={Axel Elaldi and Guido Gerig and Neel Dey},
+booktitle={Medical Imaging with Deep Learning},
+year={2023},
+url={https://openreview.net/forum?id=lri_iAbpn_r}
+}
 ```
