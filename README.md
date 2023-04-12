@@ -6,7 +6,7 @@ We provide code for both generic usage and to perform the R3 x S2 MNIST and diff
 <p align="center">
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/overview.png" />
 </p>
-*(A) Diffusion MRI measures a spatial grid of spherical signals. (B) In addition to translations and grid reflections, we construct layers equivariant to voxel and grid-wise rotations and any combination thereof. (C) RT-ESD takes a patch of spheres and processes it with an E(3) x SO(3)-equivariant UNet to produce fODFs. It is trained under an unsupervised regularized reconstruction objective.*
+Figure: (A) Diffusion MRI measures a spatial grid of spherical signals. (B) In addition to translations and grid reflections, we construct layers equivariant to voxel and grid-wise rotations and any combination thereof. (C) RT-ESD takes a patch of spheres and processes it with an E(3) x SO(3)-equivariant UNet to produce fODFs. It is trained under an unsupervised regularized reconstruction objective.
 
 ## 1. Getting started
 
