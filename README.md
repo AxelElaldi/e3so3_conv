@@ -5,7 +5,9 @@ PyTorch implementation of the paper [E3xSO3 Equivariant Networks for Spherical D
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/e3so3conv.png" />
 </p>
 
-(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(\cdot)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
+(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes.
+(b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features.
+(c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(\cdot)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
 
 We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
 
@@ -248,7 +250,7 @@ You can train a new model on your data using the following bash command:
 ```
     python train.py --data_path $your_data_path --batch_size 32 --lr 0.0017 --epoch 50 --filter_start 1 --sh_degree 18 --save_every 1 --loss_intensity L2 --loss_sparsity cauchy --loss_non_negativity L2 --sigma_sparsity 1e-05 --sparsity_weight 1e-06 --intensity_weight 1 --nn_fodf_weight 1 --pve_weight 1e-11 --wm --gm  --rf_name $your_rf_algo_choice --depth 5 --patch_size 5 --normalize --kernel_sizeSpa 3 --conv_name mixed
 ```
-Training script works with mixed (RT-ESD) and spherical (ESD) convolutions. Adding the --concatenate produces a (C-ESD) model.
+Training script works with mixed (RT-ESD) and spherical (ESD) convolutions. Adding the --concatenate flag produces a (C-ESD) model.
 
 ## 6.3 Test a model
 You can test a trained model on your data using the following bash command:
@@ -277,7 +279,7 @@ Part of the graph convolution code comes from [DeepSphere](https://github.com/de
 Please consider citing our paper if you find this repository useful.
 ```
     @inproceedings{elaldi3,
-    title={$E (3)$\backslash$times SO (3)$-Equivariant Networks for Spherical Deconvolution in Diffusion MRI},
+    title={$E(3)$\backslash$times SO(3)$-Equivariant Networks for Spherical Deconvolution in Diffusion MRI},
     author={Elaldi, Axel and Dey, Neel and Gerig, Guido},
     booktitle={Medical Imaging with Deep Learning}
     }
