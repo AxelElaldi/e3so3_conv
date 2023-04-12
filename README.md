@@ -1,7 +1,9 @@
 # Roto-Translation Equivariant Spherical Deconvolution
 PyTorch implementation of the paper [E3xSO3 Equivariant Networks for Spherical Deconvolution in Diffusion MRI](https://openreview.net/pdf?id=lri_iAbpn_r) from Axel Elaldi, Neel Dey, and Guido Gerig . Main application of this work is for diffusion MRI and fODF estimation, and can be extended to other learning problem on structured or unstructured grid of spheres.
 
-![alt text](https://github.com/AxelElaldi/e3so3_conv/blob/main/img/fig.png)
+<p align="center">
+  <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/fig.png" />
+</p>
 (a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(\cdot)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
 
 We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
