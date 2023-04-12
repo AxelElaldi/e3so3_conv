@@ -4,11 +4,9 @@ PyTorch implementation of the paper [E3xSO3 Equivariant Networks for Spherical D
 <p align="center">
   <img src="https://github.com/AxelElaldi/e3so3_conv/blob/main/img/e3so3conv.png" />
 </p>
-(a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(\cdot)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
+(a) The input is a patch of spherical signals $ \mathbf{f} $ with $ F_{in} $ features. For each voxel $ x\in\mathbb{R}^3 $, $ \mathbf{f}(x) $ is projected onto a spherical graph $ \mathcal{G} $ with $ V $ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $ L $. The filter outputs are then aggregated along the grid to create a spherical signal $ \mathbf{\hat{f}} $ with $ F_{in}V $ features. (c) For each $ v\in\mathcal{G} $, we extract the corresponding spatial signal $ \mathbf{\hat{f}}_v(\cdot) $. (d) These $ V $ convolutions give the final grid of spheres $ \mathbf{f}_{out} $. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
 
 We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
-
-The response functions are given to the network and are stored as [spherical harmonic coefficients](https://en.wikipedia.org/wiki/Spherical_harmonics) (SHC). Since these signals are polar signals, every SHCs are nulls but the ones of order 0. Thus, a reponse function is a matrix of size **SxL**, where **S** is the number of input shells and **L** is the maximum spherical harmonic degree of the response functions. A response function file as a txt file with **S** rows and **L** columns ([MRtrix](https://mrtrix.readthedocs.io/en/3.0.1/concepts/spherical_harmonics.html) convention).
 
 ## 1. Getting started
 
@@ -27,7 +25,7 @@ pip install wandb # If you want to use wandb
 pip install torchio # We use torchio to work on the proposed MNIST dataset
 ```
 
-We use [WandB](https://docs.wandb.ai/quickstart) to record model training. This is optional.
+We use [WandB](https://docs.wandb.ai/quickstart) to record model training. This is optional and disabled by default.
 
 ## 2. E3xSO3 convolution example
 ```python:
