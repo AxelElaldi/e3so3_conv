@@ -1,7 +1,7 @@
 # Roto-Translation Equivariant Spherical Deconvolution
 PyTorch implementation of the paper [E3xSO3 Equivariant Networks for Spherical Deconvolution in Diffusion MRI](https://openreview.net/pdf?id=lri_iAbpn_r) from Axel Elaldi, Neel Dey, and Guido Gerig . Main application of this work is for diffusion MRI and fODF estimation, and can be extended to other learning problem on structured or unstructured grid of spheres.
 
-![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/rtesd/img/fig.png)
+![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/e3so3_conv/img/fig.png)
 (a) The input is a patch of spherical signals $\mathbf{f}$ with $F_{in}$ features. For each voxel $x\in\mathbb{R}^3$, $\mathbf{f}(x)$ is projected onto a spherical graph $\mathcal{G}$ with $V$ nodes. (b) The convolution first filters each sphere with Chebyshev polynomials applied to the Laplacian $L$. The filter outputs are then aggregated along the grid to create a spherical signal $\mathbf{\hat{f}}$ with $F_{in}V$ features. (c) For each $v\in\mathcal{G}$, we extract the corresponding spatial signal $\mathbf{\hat{f}}_v(\cdot)$. (d) These $V$ convolutions give the final grid of spheres $\mathbf{f}_{out}$. Connected boxes across (c) and (d) show spatial operations on a single spherical vertex.
 
 We use the spherical graph convolution from [DeepSphere](https://github.com/deepsphere/deepsphere-pytorch) and the base code from [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution).
@@ -155,7 +155,7 @@ y = unet(x) # B x F_out x (V or 1) x P x P x P
 
 We provide the code to generate different version of the R3xS2 MNIST dataset. For more details on the generation process, we refer to the paper [RTESD](https://openreview.net/pdf?id=lri_iAbpn_r).
 
-![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/rtesd/img/r3s2mnist.png)
+![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/e3so3_conv/img/r3s2mnist.png)
 Spatio-spherical images and label maps for $\mathbb{R}^3 \times \mathcal{S}^2$ MNIST, respectively.
 
 ### 4.1 Create the volume labels
@@ -215,13 +215,13 @@ python test_mnist.py --data_path $your_dataset_path --batch_size 1 --model_name 
 
 ### 5.4 Result
 
-![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/rtesd/img/r3s2mnist_result.png)
+![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/e3so3_conv/img/r3s2mnist_result.png)
 Classification performances when trained on data with (right) or without (left) rotation augmentation and tested on data with no rotations, grid-rotations, voxel-rotations, and independent grid and voxel-rotations.
 
 ## 6. Diffusion MRI deconvolution
 The main application of this work is for dMRI deconvolution. We use the same architecture and training process as [ESD](https://github.com/AxelElaldi/equivariant-spherical-deconvolution), where you can find usefull information on the deconvolution architecture.
 
-![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/rtesd/img/unet_dmri.png)
+![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/e3so3_conv/img/unet_dmri.png)
 RT-ESD takes a patch of spheres and processes it with an $E(3)\times SO(3)$-equivariant UNet to produce fODFs. It is trained under an unsupervised regularized reconstruction objective.
 
 ## 6.1 Prepare the diffusion MRI data
@@ -248,10 +248,10 @@ You can test a trained model on your data using the following bash command:
 ```
 
 ## 6.4 Result
-![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/rtesd/img/pve.png)
+![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/e3so3_conv/img/pve.png)
 Unsupervised partial volume estimation. Col. 1: T1w MRI and label map of the subject co-registered to the dMRI input. Cols. 2--4, row 1: Partial volume estimates from each deconvolution method. Cols. 2--4, row 2: Divergence maps between the estimated partial volumes and the reference segmentation.
 
-![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/rtesd/img/fiber.png)
+![alt text](https://github.com/AxelElaldi/equivariant-spherical-deconvolution/blob/e3so3_conv/img/fiber.png)
 Estimated fODFs from the Tractometer dMRI dataset. This figure visualizes results from CSD, ESD, and RT-ESD at a particular location with crossing fibers. RT-ESD yields more spatially-coherent fiber directions with accurate modeling of crossing fibers as compared to the spatially-agnostic ESD and CSD baselines.
 
 ## Licence
